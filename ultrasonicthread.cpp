@@ -40,19 +40,21 @@ public:
 		//int i = 0;
 
 		//while(i<n){
-			lock_guard<mutex> lock(mtx);
+			mtx.lock();
 			pinMode(pin_num,OUTPUT);
 			digitalWrite(pin_num,1);
 			pinMode(pin_num,INPUT);
-			//delayMicroseconds(750);
 			while(digitalRead(pin_num)!=1);
 			gettimeofday(&time1,nullptr);
 			while(digitalRead(pin_num)!=0);
 			gettimeofday(&time2,nullptr);
+			mtx.unlock();
 			//i++;
+			printf("%lf\n",gettime());
 		//}
 	}
 };
+
 
 inline double Sonic::gettime(){
 	lock_guard<mutex> lock(mtx);
@@ -75,8 +77,6 @@ int main(){
 	//sonic_one();
 	//printf("%lf\n",sonic_one.gettime());
 	thread t1(sonic_one);
-	sleep(1);
-	printf("%lf\n",sonic_one.gettime());
 	t1.join();
 	return 0;
 }
